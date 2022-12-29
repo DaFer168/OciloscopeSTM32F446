@@ -40,8 +40,11 @@ uint16_t minVal;
 uint16_t avg;
 uint16_t maxVal;
 uint32_t adc[SAMPLES];
+uint16_t maxX = 320;
+uint16_t maxY = 240;
 #define NS  128
 uint16_t num = 0;
+int i, j;
 long loc_y, loc_x, prev_loc_x, prev_loc_y;
 float DigitalScaller;
 long map(long x, long in_min, long in_max, long out_min, long out_max)
@@ -112,6 +115,7 @@ void OSC_Draw_Samples();
 void OSC_Clear_Screen();
 void adc_input();
 void encoder();
+void Start_Ecran();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -165,7 +169,7 @@ int main(void)
     HAL_TIM_Encoder_Start(&htim1,TIM_CHANNEL_ALL);
     ILI9341_Init(&hspi1, LCD_CS_GPIO_Port, LCD_CS_Pin, LCD_DC_GPIO_Port, LCD_DC_Pin, LCD_RST_GPIO_Port, LCD_RST_Pin);
 	ILI9341_setRotation(2);
-    ILI9341_Fill(COLOR_NAVY);
+    Start_Ecran();
     TimeDiv = 1000; 		// in nano seconds
     VoltDiv = 200;			// in milli volt
     V_Offest	= 100;			// in pixel unit
@@ -579,6 +583,37 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void Start_Ecran()
+{
+    ILI9341_Fill_Rect(0,0,maxX, maxY, COLOR_BLACK);
+    for(i=2; i < maxX; i+=20) 
+    {
+    ILI9341_DrawPixel(i-2, maxY/2, COLOR_RED);
+    ILI9341_DrawPixel(i-1, maxY/2, COLOR_RED);
+    ILI9341_DrawPixel(i, maxY/2, COLOR_RED);
+    ILI9341_DrawPixel(i+1, maxY/2, COLOR_RED);
+    ILI9341_DrawPixel(i+2, maxY/2, COLOR_RED);
+    ILI9341_DrawPixel(i+3, maxY/2, COLOR_RED);
+    ILI9341_DrawPixel(i+4, maxY/2, COLOR_RED);
+    }
+    for(i=0; i <= maxY+2; i+=20) 
+    {
+    ILI9341_DrawPixel(maxX/2, i-4, COLOR_RED);
+    ILI9341_DrawPixel(maxX/2, i-3, COLOR_RED);
+    ILI9341_DrawPixel(maxX/2, i-2, COLOR_RED);
+    ILI9341_DrawPixel(maxX/2, i-1, COLOR_RED);
+    ILI9341_DrawPixel(maxX/2, i, COLOR_RED);
+    ILI9341_DrawPixel(maxX/2, i+1, COLOR_RED);
+    ILI9341_DrawPixel(maxX/2, i+2, COLOR_RED);
+    }
+    for(i=3; i < maxX; i+=20) 
+    {
+    for(j=0; j <= maxY+1; j+=20) 
+        {
+    ILI9341_DrawPixel(i, j-1, COLOR_RED);
+    }
+}
+}
 void encoder()
 {
     int32_t currCounter = __HAL_TIM_GET_COUNTER(&htim1);
@@ -618,12 +653,13 @@ void OSC_Process_Samples()
 void OSC_Draw_Samples()
 {
     prev_loc_x = 0;
-	prev_loc_y = map(AdcArr[0]*DigitalScaller, 0, MAX_DIGITAL, 100-V_Offest, 10);
+	prev_loc_y = map(AdcArr[0]*DigitalScaller, 0, MAX_DIGITAL, 100-V_Offest, 35);
 	for (uint16_t j = 0; j < SAMPLES/SampleScaller; j++)
 	{
 		loc_x = map(j, 0, SAMPLES/SampleScaller, 0, 320);
-		loc_y = map(AdcArr[j]*DigitalScaller, 0, MAX_DIGITAL, 100-V_Offest, 10);
-		TFT_Draw_Line(prev_loc_x, prev_loc_y, loc_x, loc_y, COLOR_RED);
+		loc_y = map(AdcArr[j]*DigitalScaller, 0, MAX_DIGITAL, 100-V_Offest, 35);
+		TFT_Draw_Line(prev_loc_x, prev_loc_y, loc_x, loc_y, COLOR_YELLOW);
+        
 		prev_loc_x = loc_x;
 		prev_loc_y = loc_y;
 	}
@@ -633,8 +669,8 @@ void OSC_Clear_Screen()
 	for (uint16_t j = 0; j < SAMPLES/SampleScaller; j++)
 	{
 		loc_x = map(j, 0, SAMPLES/SampleScaller, 0, 320);
-		loc_y = map(AdcArr[j]*DigitalScaller, 0, MAX_DIGITAL, 100-V_Offest, 10);
-		TFT_Draw_Line(prev_loc_x, prev_loc_y, loc_x, loc_y,COLOR_NAVY);
+		loc_y = map(AdcArr[j]*DigitalScaller, 0, MAX_DIGITAL, 100-V_Offest, 35);
+		TFT_Draw_Line(prev_loc_x, prev_loc_y, loc_x, loc_y,COLOR_BLACK);
 		prev_loc_x = loc_x;
 		prev_loc_y = loc_y;
 	}

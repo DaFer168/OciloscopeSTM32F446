@@ -44,7 +44,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x60253184)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x60253184)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x6025318E)
 I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x60253188)
-F (../Core/Src/main.c)(0x63AD91E3)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_test8-IC:\Users\Господин\AppData\Local\Arm\Packs\ARM\CMSIS\5.8.0\CMSIS\Core\Include-IC:\Users\Господин\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.16.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32F446xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F446xx-o test8\main.o --omf_browse test8\main.crf --depend test8\main.d)
+F (../Core/Src/main.c)(0x63AD9B39)(--c99 -c --cpu Cortex-M4.fp.sp -D__EVAL -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc -I ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I ../Drivers/CMSIS/Include-I.\RTE\_test8-IC:\Users\Господин\AppData\Local\Arm\Packs\ARM\CMSIS\5.8.0\CMSIS\Core\Include-IC:\Users\Господин\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.16.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32F446xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F446xx-o test8\main.o --omf_browse test8\main.crf --depend test8\main.d)
 I (../Core/Inc/main.h)(0x63AD8D47)
 I (../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h)(0x6381B23A)
 I (../Core/Inc/stm32f4xx_hal_conf.h)(0x63AD8D47)
