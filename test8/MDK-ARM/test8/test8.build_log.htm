@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: µVision V5.36.0.0
 Copyright (C) 2021 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Denis Fedorov, wjgiwggkw, LIC=----
+License Information: denis fedorov, sfu, LIC=----
  
 Tool Versions:
 Toolchain:       MDK-Lite  Version: 5.36.0.0
@@ -21,8 +21,8 @@ Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.9.0
 Dialog DLL:      TCM.DLL V1.53.0.0
  
 <h2>Project:</h2>
-D:\test8\MDK-ARM\test8.uvprojx
-Project File Date:  12/27/2022
+E:\git\osciloscpoe\test8\MDK-ARM\test8.uvprojx
+Project File Date:  12/29/2022
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
@@ -32,19 +32,23 @@ compiling main.c...
   void Net();
 ../Core/Inc/ili9341.h(158): warning:  #1-D: last line of file ends without a newline
   void TFT_Draw_Line(int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
-../Core/Src/main.c(108): warning:  #1295-D: Deprecated declaration OSC_Process_Samples - give arg types
+../Core/Src/main.c(110): warning:  #1295-D: Deprecated declaration OSC_Process_Samples - give arg types
   void OSC_Process_Samples();
-../Core/Src/main.c(109): warning:  #1295-D: Deprecated declaration OSC_Draw_Samples - give arg types
+../Core/Src/main.c(111): warning:  #1295-D: Deprecated declaration OSC_Draw_Samples - give arg types
   void OSC_Draw_Samples();
-../Core/Src/main.c(110): warning:  #1295-D: Deprecated declaration OSC_Clear_Screen - give arg types
+../Core/Src/main.c(112): warning:  #1295-D: Deprecated declaration OSC_Clear_Screen - give arg types
   void OSC_Clear_Screen();
-../Core/Src/main.c(172): warning:  #177-D: variable "f"  was declared but never referenced
+../Core/Src/main.c(113): warning:  #1295-D: Deprecated declaration adc_input - give arg types
+  void adc_input();
+../Core/Src/main.c(114): warning:  #1295-D: Deprecated declaration encoder - give arg types
+  void encoder();
+../Core/Src/main.c(177): warning:  #177-D: variable "f"  was declared but never referenced
       uint16_t f = 0;
-../Core/Src/main.c: 6 warnings, 0 errors
+../Core/Src/main.c: 8 warnings, 0 errors
 linking...
-Program Size: Code=11614 RO-data=510 RW-data=100 ZI-data=8356  
+Program Size: Code=12506 RO-data=510 RW-data=108 ZI-data=8356  
 FromELF: creating hex file...
-"test8\test8.axf" - 0 Error(s), 6 Warning(s).
+"test8\test8.axf" - 0 Error(s), 8 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -61,8 +65,8 @@ Package Vendor: Keil
 
 <h2>Collection of Component include folders:</h2>
   .\RTE\_test8
-  C:\Users\fedor\AppData\Local\Arm\Packs\ARM\CMSIS\5.8.0\CMSIS\Core\Include
-  C:\Users\fedor\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.16.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
+  C:\Users\Господин\AppData\Local\Arm\Packs\ARM\CMSIS\5.8.0\CMSIS\Core\Include
+  C:\Users\Господин\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.16.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
 
 <h2>Collection of Component Files used:</h2>
 

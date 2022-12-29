@@ -28,6 +28,8 @@
 /* USER CODE BEGIN PTD */
 #define SAMPLES		256*4
 #define MAX_DIGITAL		255
+int32_t prevCounter = 1;
+int32_t a = 1;
 uint32_t SampleScaller;
 uint16_t V_Offest;
 uint16_t VoltDiv;
@@ -85,8 +87,8 @@ DAC_HandleTypeDef hdac;
 SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim1;
-TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim8;
+TIM_HandleTypeDef htim10;
 
 /* USER CODE BEGIN PV */
 
@@ -101,13 +103,15 @@ static void MX_ADC1_Init(void);
 static void MX_DAC_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_TIM1_Init(void);
-static void MX_TIM2_Init(void);
 static void MX_TIM8_Init(void);
+static void MX_TIM10_Init(void);
 /* USER CODE BEGIN PFP */
 
 void OSC_Process_Samples();
 void OSC_Draw_Samples();
 void OSC_Clear_Screen();
+void adc_input();
+void encoder();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -151,21 +155,22 @@ int main(void)
   MX_DAC_Init();
   MX_SPI1_Init();
   MX_TIM1_Init();
-  MX_TIM2_Init();
   MX_TIM8_Init();
+  MX_TIM10_Init();
   /* USER CODE BEGIN 2 */
 //    HAL_TIM_Base_Start(&htim2);
 //    HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t*)Sin, NS, DAC_ALIGN_12B_R);
 //    HAL_ADC_Start_IT(&hadc1);
 //    HAL_TIM_Base_Start_IT(&htim1);
+    HAL_TIM_Encoder_Start(&htim1,TIM_CHANNEL_ALL);
     ILI9341_Init(&hspi1, LCD_CS_GPIO_Port, LCD_CS_Pin, LCD_DC_GPIO_Port, LCD_DC_Pin, LCD_RST_GPIO_Port, LCD_RST_Pin);
 	ILI9341_setRotation(2);
     ILI9341_Fill(COLOR_NAVY);
-    TimeDiv = 16000; 		// in nano seconds
+    TimeDiv = 1000; 		// in nano seconds
     VoltDiv = 200;			// in milli volt
     V_Offest	= 100;			// in pixel unit
     DigitalScaller = (MAX_DIGITAL*3.2) / (6 * VoltDiv);
-	SampleScaller = (SAMPLES * dt) / (10 * TimeDiv); 
+	 
     
     
 //    Change_Voffest();
@@ -177,11 +182,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {   
-      HAL_ADC_Start_DMA(&hadc1,adc,SAMPLES);
-      for (int i=0;i<SAMPLES; i++)
-      {
-      AdcArr[i]=adc[i];
-      }
+        encoder();
+        adc_input();
       OSC_Process_Samples();
       OSC_Draw_Samples();
       OSC_Clear_Screen();
@@ -398,7 +400,7 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 0 */
 
-  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_Encoder_InitTypeDef sConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
 
   /* USER CODE BEGIN TIM1_Init 1 */
@@ -407,16 +409,20 @@ static void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 9599;
+  htim1.Init.Period = 65535;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
+  sConfig.EncoderMode = TIM_ENCODERMODE_TI1;
+  sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
+  sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
+  sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
+  sConfig.IC1Filter = 0;
+  sConfig.IC2Polarity = TIM_ICPOLARITY_RISING;
+  sConfig.IC2Selection = TIM_ICSELECTION_DIRECTTI;
+  sConfig.IC2Prescaler = TIM_ICPSC_DIV1;
+  sConfig.IC2Filter = 0;
+  if (HAL_TIM_Encoder_Init(&htim1, &sConfig) != HAL_OK)
   {
     Error_Handler();
   }
@@ -429,51 +435,6 @@ static void MX_TIM1_Init(void)
   /* USER CODE BEGIN TIM1_Init 2 */
 
   /* USER CODE END TIM1_Init 2 */
-
-}
-
-/**
-  * @brief TIM2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM2_Init(void)
-{
-
-  /* USER CODE BEGIN TIM2_Init 0 */
-
-  /* USER CODE END TIM2_Init 0 */
-
-  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-
-  /* USER CODE BEGIN TIM2_Init 1 */
-
-  /* USER CODE END TIM2_Init 1 */
-  htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 0;
-  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 124;
-  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM2_Init 2 */
-
-  /* USER CODE END TIM2_Init 2 */
 
 }
 
@@ -520,6 +481,37 @@ static void MX_TIM8_Init(void)
   /* USER CODE BEGIN TIM8_Init 2 */
 
   /* USER CODE END TIM8_Init 2 */
+
+}
+
+/**
+  * @brief TIM10 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM10_Init(void)
+{
+
+  /* USER CODE BEGIN TIM10_Init 0 */
+
+  /* USER CODE END TIM10_Init 0 */
+
+  /* USER CODE BEGIN TIM10_Init 1 */
+
+  /* USER CODE END TIM10_Init 1 */
+  htim10.Instance = TIM10;
+  htim10.Init.Prescaler = 0;
+  htim10.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim10.Init.Period = 65535;
+  htim10.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim10.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim10) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM10_Init 2 */
+
+  /* USER CODE END TIM10_Init 2 */
 
 }
 
@@ -587,6 +579,36 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void encoder()
+{
+    int32_t currCounter = __HAL_TIM_GET_COUNTER(&htim1);
+    currCounter = 32768 - ((currCounter-1) & 0xFFFF)/2;
+    if(currCounter >32768/2){
+        currCounter = currCounter - 32768;
+    }
+    if(currCounter != prevCounter){
+        int32_t delta = currCounter-prevCounter;
+        prevCounter = currCounter;
+        a = prevCounter;
+        if((delta > 1)&&(delta<10)){
+        }
+    } 
+    if (a < 1){
+        a=1;
+    }
+        TimeDiv = 1000*a;
+        SampleScaller = (SAMPLES * dt) / (10 * TimeDiv);
+}
+
+void adc_input()
+{
+    HAL_ADC_Start_DMA(&hadc1,adc,SAMPLES);
+      for (int i=0;i<SAMPLES; i++)
+      {
+      AdcArr[i]=adc[i];
+      }
+
+}
 void OSC_Process_Samples()
 {
 	//DMA_Channel_Disable(DMA2, 0);
